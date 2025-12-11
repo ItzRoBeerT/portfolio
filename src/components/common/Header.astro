@@ -1,0 +1,23 @@
+---
+// src/components/common/Header.astro
+import { getLangFromUrl, useTranslations } from '@utils/i18n';
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+---
+
+<header class="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-200">
+  <nav class="container-custom py-4">
+    <div class="flex items-center justify-between">
+      <!-- Logo -->
+      <a href={lang === 'en' ? '/' : '/es/'} class="text-2xl font-bold text-gray-900 hover:text-primary-500 transition-colors">
+        Roberto
+      </a>
+
+      <!-- Placeholder for navigation -->
+      <div class="text-gray-600 text-sm">
+        Header working ✓
+      </div>
+    </div>
+  </nav>
+</header>

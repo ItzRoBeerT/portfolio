@@ -1,0 +1,110 @@
+---
+import { ClientRouter } from 'astro:transitions'; // ✅ Correct for Astro 5
+import { getLangFromUrl } from '@utils/i18n';
+import '@styles/global.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+  author?: string;
+  type?: 'website' | 'article';
+  publishedTime?: string;
+  modifiedTime?: string;
+}
+
+// Default SEO values
+const {
+  title = 'Roberto - Full-Stack Developer',
+  description = 'Full-Stack Developer specialized in React, Astro, and modern web technologies. Building fast, accessible, and beautiful web experiences.',
+  image = '/og-image.jpg',
+  author = 'Roberto (ItzRoBeerT)',
+  type = 'website',
+  publishedTime,
+  modifiedTime,
+} = Astro.props;
+
+// Detect current language from URL
+const lang = getLangFromUrl(Astro.url);
+
+// Canonical URL (important for SEO - tells search engines the "official" URL)
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+
+// Full Open Graph image URL
+const ogImageURL = new URL(image, Astro.site);
+
+// Structured Data (Schema.org JSON-LD)
+// Helps search engines understand who you are and what you do
+const schemaData = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: 'Roberto',
+  url: Astro.site,
+  image: ogImageURL,
+  jobTitle: 'Full-Stack Developer',
+  description: description,
+  sameAs: [
+    'https://github.com/ItzRoBeerT',
+    // Add your social media links when you have them
+    // 'https://linkedin.com/in/your-profile',
+    // 'https://twitter.com/your-handle',
+  ],
+  knowsAbout: [
+    'JavaScript',
+    'TypeScript',
+    'React',
+    'Astro',
+    'Node.js',
+    'Web Development',
+  ],
+};
+---
+
+<!doctype html>
+<html lang={lang} class="scroll-smooth">
+  <head>
+    <!-- Essential meta tags -->
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <!-- Basic SEO -->
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="author" content={author} />
+    <link rel="canonical" href={canonicalURL} />
+    
+    <!-- Open Graph meta tags (for Facebook, LinkedIn, etc.) -->
+    <meta property="og:type" content={type} />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={ogImageURL} />
+    <meta property="og:locale" content={lang === 'es' ? 'es_ES' : 'en_US'} />
+    {publishedTime && <meta property="article:published_time" content={publishedTime} />}
+    {modifiedTime && <meta property="article:modified_time" content={modifiedTime} />}
+    
+    <!-- Twitter Card meta tags -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content={canonicalURL} />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImageURL} />
+    <!-- Add your Twitter handle when you have it -->
+    <!-- <meta name="twitter:creator" content="@your_handle" /> -->
+    
+    <!-- Favicon (placeholder - we'll create this later) -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    
+    <!-- Schema.org JSON-LD for rich results in search engines -->
+    <script type="application/ld+json" set:html={JSON.stringify(schemaData)} />
+    
+    <!-- ClientRouter for smooth page transitions (formerly ViewTransitions) -->
+    <ClientRouter />
+    
+    <!-- Astro generator meta tag -->
+    <meta name="generator" content={Astro.generator} />
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>

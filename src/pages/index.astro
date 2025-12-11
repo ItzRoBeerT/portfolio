@@ -1,16 +1,23 @@
 ---
+// src/pages/index.astro
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Header from '@/components/common/Header.astro';
+import { getLangFromUrl, useTranslations } from '@/utils/i18n';
 
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<BaseLayout>
+	<Header />
+
+	<main class="min-h-screen flex items-center justify-center bg-gray-50 pt-20">
+		<div class="text-center">
+			<h1 class="text-6xl font-bold mb-4">Hello Tailwind v4! 🎨</h1>
+			<p class="text-xl text-gray-600">Roberto's Portfolio - Coming Soon</p>
+			<button class="mt-8 px-6 py-3 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-colors">
+				Get Started
+			</button>
+		</div>
+	</main>
+</BaseLayout>
