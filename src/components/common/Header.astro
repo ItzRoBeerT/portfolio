@@ -1,23 +1,233 @@
 ---
-// src/components/common/Header.astro
-import { getLangFromUrl, useTranslations } from '@utils/i18n';
+import { getLangFromUrl, useTranslations } from '@/utils/i18n';
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
+
+const navLinks = [
+  { key: 'nav.home', href: '#home' },
+  { key: 'nav.about', href: '#about' },
+  { key: 'nav.projects', href: '#projects' },
+  { key: 'nav.blog', href: '/blog' },
+  { key: 'nav.contact', href: '#contact' },
+] as const;
+
+const currentPath = Astro.url.pathname;
+
+const enPath = currentPath.startsWith('/es') 
+  ? currentPath.replace('/es', '') || '/' 
+  : currentPath;
+const esPath = currentPath.startsWith('/es') 
+  ? currentPath 
+  : `/es${currentPath === '/' ? '' : currentPath}`;
 ---
 
-<header class="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-200">
-  <nav class="container-custom py-4">
+<header 
+  class="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-200 transition-all duration-300"
+  id="main-header"
+>
+  <nav 
+    class="container-custom py-4"
+    aria-label={lang === 'en' ? 'Main navigation' : 'Navegación principal'}
+  >
     <div class="flex items-center justify-between">
-      <!-- Logo -->
-      <a href={lang === 'en' ? '/' : '/es/'} class="text-2xl font-bold text-gray-900 hover:text-primary-500 transition-colors">
+      
+      <!-- ═══════════════════════════════════════════════════════════════
+           LOGO
+           ═══════════════════════════════════════════════════════════════ -->
+      <a 
+        href={lang === 'en' ? '/' : '/es/'} 
+        class="text-2xl font-bold text-gray-900 hover:text-primary-500 transition-colors"
+        aria-label={lang === 'en' ? 'Go to homepage' : 'Ir al inicio'}
+      >
         Roberto
       </a>
 
-      <!-- Placeholder for navigation -->
-      <div class="text-gray-600 text-sm">
-        Header working ✓
+      <!-- ═══════════════════════════════════════════════════════════════
+           DESKTOP NAVIGATION
+           ═══════════════════════════════════════════════════════════════ -->
+      <div class="hidden md:flex items-center gap-1">
+        {navLinks.map((link) => (
+          <a
+            href={link.href}
+            class="px-4 py-2 text-gray-600 hover:text-primary-500 rounded-lg hover:bg-gray-100 transition-colors text-sm font-medium"
+          >
+            {t(link.key)}
+          </a>
+        ))}
+      </div>
+
+      <!-- ═══════════════════════════════════════════════════════════════
+           RIGHT SIDE: Language Switcher + Mobile Menu Button
+           ═══════════════════════════════════════════════════════════════ -->
+      <div class="flex items-center gap-4">
+        <div 
+          class="flex items-center gap-2 text-sm"
+          role="navigation"
+          aria-label={lang === 'en' ? 'Language selection' : 'Selección de idioma'}
+        >
+          <a
+            href={enPath}
+            class:list={[
+              'transition-colors',
+              lang === 'en' 
+                ? 'text-primary-500 font-bold' 
+                : 'text-gray-500 hover:text-gray-900'
+            ]}
+            aria-current={lang === 'en' ? 'true' : undefined}
+            aria-label="English"
+          >
+            EN
+          </a>
+          <span class="text-gray-300" aria-hidden="true">|</span>
+          
+          <a
+            href={esPath}
+            class:list={[
+              'transition-colors',
+              lang === 'es' 
+                ? 'text-primary-500 font-bold' 
+                : 'text-gray-500 hover:text-gray-900'
+            ]}
+            aria-current={lang === 'es' ? 'true' : undefined}
+            aria-label="Español"
+          >
+            ES
+          </a>
+        </div>
+
+        <!-- MOBILE MENU BUTTON (Hamburger) -->
+        <button
+          type="button"
+          class="md:hidden p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors"
+          id="mobile-menu-button"
+          aria-expanded="false"
+          aria-controls="mobile-menu"
+          aria-label={lang === 'en' ? 'Open menu' : 'Abrir menú'}
+        >
+          <!-- Hamburger Icon -->
+          <svg 
+            class="w-6 h-6 hamburger-icon" 
+            fill="none" 
+            stroke="currentColor" 
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+          >
+            <path 
+              class="hamburger-top"
+              stroke-linecap="round" 
+              stroke-linejoin="round" 
+              stroke-width="2" 
+              d="M4 6h16"
+            />
+            <path 
+              class="hamburger-middle"
+              stroke-linecap="round" 
+              stroke-linejoin="round" 
+              stroke-width="2" 
+              d="M4 12h16"
+            />
+            <path 
+              class="hamburger-bottom"
+              stroke-linecap="round" 
+              stroke-linejoin="round" 
+              stroke-width="2" 
+              d="M4 18h16"
+            />
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         MOBILE NAVIGATION MENU
+         ═══════════════════════════════════════════════════════════════ -->
+    <div
+      id="mobile-menu"
+      class="md:hidden hidden"
+      role="menu"
+      aria-labelledby="mobile-menu-button"
+    >
+      <div class="pt-4 pb-2 mt-4 border-t border-gray-200 space-y-1">
+        {navLinks.map((link) => (
+          <a
+            href={link.href}
+            class="block px-4 py-3 text-gray-600 hover:text-primary-500 hover:bg-gray-50 rounded-lg transition-colors font-medium"
+            role="menuitem"
+          >
+            {t(link.key)}
+          </a>
+        ))}
       </div>
     </div>
   </nav>
 </header>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     JAVASCRIPT: Toggle 
+     ═══════════════════════════════════════════════════════════════ -->
+<script>
+  function initMobileMenu() {
+    const button = document.getElementById('mobile-menu-button');
+    const menu = document.getElementById('mobile-menu');
+    
+    if (!button || !menu) return;
+
+    button.addEventListener('click', () => {
+      const isExpanded = button.getAttribute('aria-expanded') === 'true';
+      
+      // the screen readers will announce "menu expanded/collapsed"
+      button.setAttribute('aria-expanded', String(!isExpanded));
+      
+      const lang = document.documentElement.lang;
+    
+      button.setAttribute(
+        'aria-label', 
+        !isExpanded 
+          ? (lang === 'es' ? 'Cerrar menú' : 'Close menu')
+          : (lang === 'es' ? 'Abrir menú' : 'Open menu')
+      );
+      
+      menu.classList.toggle('hidden');
+      
+      button.classList.toggle('menu-open');
+    });
+
+    // Close the menu when a link is clicked
+    menu.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        menu.classList.add('hidden');
+        button.setAttribute('aria-expanded', 'false');
+        button.classList.remove('menu-open');
+      });
+    });
+  }
+
+  initMobileMenu();
+  
+  // Re-initialize after navigation with View Transitions
+  // Astro's View Transitions replaces content, we need to re-bind
+  document.addEventListener('astro:after-swap', initMobileMenu);
+</script>
+
+
+<style>
+  /* hamburger transition */
+  .hamburger-icon path {
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    transform-origin: center;
+  }
+
+  /* When the menu is open, transform into an X */
+  .menu-open .hamburger-top {
+    transform: translateY(6px) rotate(45deg);
+  }
+
+  .menu-open .hamburger-middle {
+    opacity: 0;
+  }
+
+  .menu-open .hamburger-bottom {
+    transform: translateY(-6px) rotate(-45deg);
+  }
+</style>

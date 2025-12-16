@@ -5,10 +5,18 @@ import { getLangFromUrl, useTranslations } from '@/utils/i18n';
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
+
+
+const seoProps = {
+	title: 'Roberto - Desarrollador Full-Stack',
+	description:
+		'Desarrollador Full-Stack especializado en React, Astro y tecnologías web modernas. Construyendo experiencias web rápidas, accesibles y hermosas.',
+};
 ---
 
-<BaseLayout>
+<BaseLayout {...seoProps}>
 	<Header />
+
 	<main class="min-h-screen flex items-center justify-center bg-gray-50 pt-20">
 		<div class="text-center">
 			<h1 class="text-6xl font-bold mb-4">{t('hero.greeting')} Roberto! 🎨</h1>

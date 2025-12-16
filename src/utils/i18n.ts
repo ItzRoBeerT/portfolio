@@ -105,13 +105,13 @@ export function useTranslations(lang: Locale) {
 export function getLocalizedPath(url: URL, locale: Locale): string {
   const pathname = url.pathname;
   
-  // Si ya está en español, remover el prefijo
+  // if already in Spanish, remove prefix if switching to English
   if (pathname.startsWith('/es/')) {
     const pathWithoutLocale = pathname.replace('/es/', '/');
     return locale === 'es' ? pathname : pathWithoutLocale;
   }
   
-  // Si está en inglés, añadir prefijo si es necesario
+  // Add Spanish prefix if switching to Spanish
   return locale === 'es' ? `/es${pathname}` : pathname;
 }
 
